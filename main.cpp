@@ -113,13 +113,62 @@ void printPath(pair<int,int> exitcell,
     }
 }
 
-// ----------------------------------------------------------
-// STUDENTS IMPLEMENT DFS HERE
-// Add arguments, return type, and logic
-// ----------------------------------------------------------
-// bool dfs(……) {
-//     // Your code here
-// }
+bool dfs(int r, int c,
+         const vector<vector<int>>& maze,
+         vector<vector<bool>>& visited,
+         vector<vector<int>>& parent_r,
+         vector<vector<int>>& parent_c,
+         int exit_r, int exit_c)
+{
+    int N = maze.size();
+    int M = maze[0].size();
+
+    // 1. Out of bounds check
+    if (r < 0 || r >= N || c < 0 || c >= M) {
+        return false;
+    }
+
+    // 2. Wall or already visited
+    if (maze[r][c] == 1 || visited[r][c]) {
+        return false;
+    }
+
+    // 3. Mark current cell as visited
+    visited[r][c] = true;
+
+    // 4. Check if this is the exit
+    if (r == exit_r && c == exit_c) {
+        return true;
+    }
+
+    // 5. Explore neighbors: up, right, down, left
+    for (int k = 0; k < 4; k++) {
+        int nr = r + dr[k];
+        int nc = c + dc[k];
+
+        // Check neighbor bounds
+        if (nr < 0 || nr >= N || nc < 0 || nc >= M) {
+            continue;
+        }
+
+        // Skip walls and visited cells
+        if (maze[nr][nc] == 1 || visited[nr][nc]) {
+            continue;
+        }
+
+        // Set parent before recursion
+        parent_r[nr][nc] = r;
+        parent_c[nr][nc] = c;
+
+        // Recurse
+        if (dfs(nr, nc, maze, visited, parent_r, parent_c, exit_r, exit_c)) {
+            return true;
+        }
+    }
+
+    // 6. No path found from this cell
+    return false;
+}
 
 
 // ----------------------------------------------------------
